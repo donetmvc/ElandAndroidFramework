@@ -1,6 +1,8 @@
 package com.eland.elandandroidframework.Activity;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.widget.TextView;
 
@@ -10,6 +12,7 @@ import com.bmob.pay.tool.PayListener;
 import com.eland.elandandroidframework.Application.ElandApplication;
 import com.eland.elandandroidframework.R;
 import com.eland.elandandroidframework.Util.HttpRequest;
+import com.eland.elandandroidframework.Util.SharedPreferencesHelper;
 import com.loopj.android.http.JsonHttpResponseHandler;
 import com.loopj.android.http.RequestParams;
 
@@ -31,6 +34,7 @@ public class MainActivity extends Activity {
     String test_message;
 
     private String orderInfor;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,32 +43,36 @@ public class MainActivity extends Activity {
 
         //将当前的activity加入到list管理器中，方便管理生命周期
         ElandApplication.getInstance().addActivity(this);
-
+        context = this;
         ButterKnife.bind(this);
     }
 
     @OnClick(R.id.btn_test) void test() {
         //txt_message.setText(test_message);
 
-        RequestParams params = new RequestParams();
-        params.put("loginId", "ju_minho");
-
-        HttpRequest.get(ElandApplication.apiUrl + "/api/Plant", params, new JsonHttpResponseHandler() {
-            @Override
-            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
-                super.onSuccess(statusCode, headers, response);
-
-                if (response != null && response.length() > 0) {
-                    //txt_message.setText(response.getJSONObject(0).getString("plantName"));
-                    txt_message.setText("전지점");
-                }
-            }
-
-            @Override
-            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
-                super.onFailure(statusCode, headers, throwable, errorResponse);
-            }
-        });
+//        RequestParams params = new RequestParams();
+//        params.put("loginId", "ju_minho");
+//
+//        HttpRequest.get(ElandApplication.apiUrl + "/api/Plant", params, new JsonHttpResponseHandler() {
+//            @Override
+//            public void onSuccess(int statusCode, Header[] headers, JSONArray response) {
+//                super.onSuccess(statusCode, headers, response);
+//
+//                if (response != null && response.length() > 0) {
+//                    //txt_message.setText(response.getJSONObject(0).getString("plantName"));
+//                    txt_message.setText("전지점");
+//                }
+//            }
+//
+//            @Override
+//            public void onFailure(int statusCode, Header[] headers, Throwable throwable, JSONObject errorResponse) {
+//                super.onFailure(statusCode, headers, throwable, errorResponse);
+//            }
+//        });
+        SharedPreferencesHelper.getInstance(context).clear();
+        Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+        startActivity(intent);
+        this.finish();
     }
 
     @OnClick(R.id.btn_alibaba) void payForalibaba() {
@@ -125,5 +133,13 @@ public class MainActivity extends Activity {
 
             }
         });
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+
+        return;
+        //finish();
     }
 }

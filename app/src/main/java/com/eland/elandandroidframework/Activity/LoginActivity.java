@@ -5,6 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -15,6 +18,8 @@ import com.eland.elandandroidframework.Model.UserInforDto;
 import com.eland.elandandroidframework.R;
 import com.eland.elandandroidframework.Service.UserProxy;
 import com.eland.elandandroidframework.Util.LogUtil;
+import com.eland.elandandroidframework.Util.SharedPreferencesHelper;
+import com.eland.elandandroidframework.Views.CircleImageView;
 import com.eland.elandandroidframework.Views.EditTextView;
 import com.eland.elandandroidframework.Views.ToastView;
 
@@ -37,11 +42,15 @@ public class LoginActivity extends Activity implements UserProxy.ISignInListener
     EditTextView userPwd;
     @Bind(R.id.loginButton)
     Button loginButton;
+    @Bind(R.id.userIcon)
+    CircleImageView circleImageView;
+
 
     private String TAG = "Eland";
     private Context context;
     private UserInforDto dto;
     private UserProxy userProxy;
+    private Animation animation;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,6 +67,10 @@ public class LoginActivity extends Activity implements UserProxy.ISignInListener
     }
 
     @OnClick(R.id.loginButton) void signIn() {
+        if(animation != null) {
+            circleImageView.startAnimation(animation);
+        }
+
         validateInput();
 
         userProxy.setOnSignInListener(this);
@@ -74,6 +87,10 @@ public class LoginActivity extends Activity implements UserProxy.ISignInListener
         Typeface typeface = Typeface.createFromAsset(this.getAssets(),
                 "font/Roboto-Light.ttf");
         tips.setTypeface(typeface);
+
+        animation = AnimationUtils.loadAnimation(context, R.anim.loading_ico);
+        LinearInterpolator lin = new LinearInterpolator(); // 匀速旋转
+        animation.setInterpolator(lin);
     }
 
     public void validateInput() {
@@ -123,6 +140,13 @@ public class LoginActivity extends Activity implements UserProxy.ISignInListener
 
     @Override
     public void onSignInSuccess() {
+
+        if(animation != null && animation.hasStarted()) {
+            circleImageView.clearAnimation();
+        }
+
+        SharedPreferencesHelper.getInstance(context).setValue("IsLogin", "true");
+
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
     }
@@ -130,9 +154,20 @@ public class LoginActivity extends Activity implements UserProxy.ISignInListener
     @Override
     public void onSignInFailure(int code, String msg) {
 
+        if(animation != null && animation.hasStarted()) {
+            circleImageView.clearAnimation();
+        }
+
         if(code == 101) {
             ToastView.showToast(context, "用户名或密码不正确.", Toast.LENGTH_LONG);
         }
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        finish();
+        ElandApplication.getInstance().existApp();
     }
 }

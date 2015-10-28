@@ -97,7 +97,9 @@ public class CircleImageView extends ImageView {
         super.setImageResource(resId);
         mBitmap = getBitmapFromDrawable(getDrawable());
         setup();
-    }    @Override
+    }
+
+    @Override
     public void setScaleType(ScaleType scaleType) {
         if (scaleType != SCALE_TYPE) {
             throw new IllegalArgumentException(String.format("ScaleType %s not supported.", scaleType));
@@ -116,7 +118,9 @@ public class CircleImageView extends ImageView {
         super.setImageDrawable(drawable);
         mBitmap = getBitmapFromDrawable(drawable);
         setup();
-    }    @Override
+    }
+
+    @Override
     protected void onDraw(Canvas canvas) {
         if (getDrawable() == null) {
             return;

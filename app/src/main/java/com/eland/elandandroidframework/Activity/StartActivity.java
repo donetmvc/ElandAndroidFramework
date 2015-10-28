@@ -1,6 +1,7 @@
 package com.eland.elandandroidframework.Activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.animation.Animation;
@@ -11,6 +12,7 @@ import android.widget.TextView;
 import com.eland.elandandroidframework.Application.ElandApplication;
 import com.eland.elandandroidframework.R;
 import com.eland.elandandroidframework.Util.LogUtil;
+import com.eland.elandandroidframework.Util.SharedPreferencesHelper;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -27,6 +29,7 @@ public class StartActivity extends Activity{
 
     private String TAG = "Eland";
     private Animation animation;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +37,7 @@ public class StartActivity extends Activity{
         setContentView(R.layout.activity_start);
 
         ElandApplication.getInstance().addActivity(this);
+        context = this;
         ButterKnife.bind(this);
         initView();
 
@@ -69,13 +73,14 @@ public class StartActivity extends Activity{
     private void goSign() {
         Intent intent;
         //User user = new User("", "");
+        String isLogin = SharedPreferencesHelper.getInstance(context).getValue("IsLogin");
 
-        //if(user.getLoginID() == "123") {
-            //intent = new Intent(this, MainActivity.class);
-        //}
-        //else {
+        if(isLogin.equals("true")) {
+            intent = new Intent(this, MainActivity.class);
+        }
+        else {
             intent = new Intent(this, LoginActivity.class);
-        //}
+        }
 
         startActivity(intent);
         this.finish();

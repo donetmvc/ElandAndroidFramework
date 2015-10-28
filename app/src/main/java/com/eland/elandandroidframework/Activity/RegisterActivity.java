@@ -45,7 +45,7 @@ public class RegisterActivity extends Activity implements UserProxy.ISignUpListe
     private Context context;
     private UserInforDto userInforDto;
     private UserProxy userProxy;
-    private String TGA = "Eland";
+    private String TAG = "Eland";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,17 +128,17 @@ public class RegisterActivity extends Activity implements UserProxy.ISignUpListe
         }
         if (sex.isEmpty()) {
             re_user_sex.setShakeAnimation();
-            ToastView.showToast(context, "确认密码不能为空", Toast.LENGTH_SHORT);
+            ToastView.showToast(context, "性别不能为空", Toast.LENGTH_SHORT);
             return;
         }
         if (age.isEmpty()) {
             re_user_age.setShakeAnimation();
-            ToastView.showToast(context, "确认密码不能为空", Toast.LENGTH_SHORT);
+            ToastView.showToast(context, "年龄不能为空", Toast.LENGTH_SHORT);
             return;
         }
         if(!re_pwd.equals(pwd)){
             re_user_pwd.setShakeAnimation();
-            ToastView.showToast(context, "密码不一致", Toast.LENGTH_SHORT);
+            ToastView.showToast(context, "密码和确认密码不一致", Toast.LENGTH_SHORT);
             return;
         }
 
@@ -150,7 +150,7 @@ public class RegisterActivity extends Activity implements UserProxy.ISignUpListe
 
     @Override
     public void onSignUpSuccess() {
-        LogUtil.i(TGA, "Register Success.");
+        LogUtil.i(TAG, "Register Success.");
         login_link.setClickable(true);
         registerButton.setClickable(true);
         Intent intent = new Intent() ;

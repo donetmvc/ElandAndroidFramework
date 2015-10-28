@@ -82,4 +82,9 @@ public class ElandApplication extends Application {
     public void addActivity(Activity ac){
         ActivityManager.getInstance().addActivity(ac);
     }
+
+    public void existApp() {
+        ActivityManager.getInstance().removeAllActivity();
+        System.exit(0);
+    }
 }
